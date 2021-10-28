@@ -11,5 +11,15 @@ use Laravel\Lumen\Auth\Authorizable;
 
 class Item extends Model
 {
-    protected $fillable = ['id', 'name'];
+    protected $fillable = [
+        // base model
+        'id', 'ordering', 'ext_created_by_id', 'uuid', 'hidden',
+        // base model end
+        'name', 'price', 'uom_id', 'description'
+    ];
+
+    public function uom()
+    {
+        return $this->belongsTo(Uom::class, 'uom_id');
+    }
 }
