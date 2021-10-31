@@ -11,6 +11,7 @@ use Laravel\Lumen\Auth\Authorizable;
 
 class Uom extends Model
 {
+   
     protected $fillable = [
         // base model
         'id', 'ordering', 'ext_created_by_id', 'uuid', 'hidden',

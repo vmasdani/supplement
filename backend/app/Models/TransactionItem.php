@@ -9,18 +9,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class Item extends Model
+class TransactionItem extends Model
 {
 
     protected $fillable = [
         // base model
         'id', 'ordering', 'ext_created_by_id', 'uuid', 'hidden',
         // base model end
-        'name', 'price', 'uom_id', 'description'
+        'type',  // i/o
+        
+        'remark', 'qty', 'transaction_id', 'item_id', 'discount_price'
     ];
 
-    public function uom()
+    public function transaction()
     {
-        return $this->belongsTo(Uom::class, 'uom_id');
+        return $this->belongsTo(Transaction::class, 'transaction_id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_id');
     }
 }

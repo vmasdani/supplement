@@ -1,7 +1,18 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:io';
 
-void main() {
-  runApp(const MyApp());
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supplementclient/applicationstate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'package:supplementclient/model.dart';
+
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
+
+  runApp(ChangeNotifierProvider(
+      create: (context) => ApplicationState(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -50,6 +61,27 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final res =
+          await http.get(Uri.parse('${dotenv.env['BASE_URL']}/api/v1/items'));
+
+      if (res.statusCode != HttpStatus.ok) throw res.body;
+
+      (jsonDecode(res.body) as Iterable).forEach((j) {
+        print(jsonEncode(Item.fromJson(j)));
+      });
+    } catch (e) {
+      print('Error $e');
+    }
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -60,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done

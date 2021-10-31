@@ -9,18 +9,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class Item extends Model
+class Customer extends Model
 {
 
     protected $fillable = [
         // base model
         'id', 'ordering', 'ext_created_by_id', 'uuid', 'hidden',
         // base model end
-        'name', 'price', 'uom_id', 'description'
+        'name', 'address', 'phone', 'email', 'user_id'
     ];
 
-    public function uom()
+    public function user()
     {
-        return $this->belongsTo(Uom::class, 'uom_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
