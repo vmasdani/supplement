@@ -21,7 +21,7 @@ class Transaction extends Model
     ];
 
     protected $dates = [
-        'date', 'timestamp', 'timestamp_non_tz', 'date_non_tz', 'date_real'
+        'date', 
     ];
 
     public function transactionItems()
