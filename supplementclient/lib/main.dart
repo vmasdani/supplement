@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:supplementclient/applicationstate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:supplementclient/maincomponent.dart';
 import 'package:supplementclient/model.dart';
 
 Future<void> main() async {
@@ -35,7 +36,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Consumer<ApplicationState>(
+        builder: (ctx, state, child) {
+          return MainComponent();
+        },
+      ),
     );
   }
 }
@@ -92,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done

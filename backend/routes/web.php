@@ -37,7 +37,7 @@ $router->get('/gen', function () use ($router) {
     $secret = '';
 
     for ($i = 0; $i < 32; $i++) {
-        $ch = $rune[rand(0, strlen($runeStr))];
+        $ch = $rune[rand(0, strlen($runeStr) - 1)];
         $secret = "$secret$ch";
     }
 

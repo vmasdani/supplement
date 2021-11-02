@@ -5,7 +5,7 @@ part 'model.g.dart';
 abstract class BaseModel {
   int? id;
   int? ordering;
-  @JsonKey(name : 'ext_created_by_id')
+  @JsonKey(name: 'ext_created_by_id')
   int? extCreatedById;
   String? uuid;
   int? hidden;
@@ -19,7 +19,7 @@ class Customer with BaseModel {
   String? address;
   String? phone;
   String? email;
-  @JsonKey(name : 'user_id')
+  @JsonKey(name: 'user_id')
   int? userId;
 
   factory Customer.fromJson(Map<String, dynamic> json) =>
@@ -33,7 +33,7 @@ class Item with BaseModel {
 
   String? name;
   double? price;
-  @JsonKey(name : 'uom_id')
+  @JsonKey(name: 'uom_id')
   int? uomId;
   Uom? uom;
   String? description;
@@ -61,11 +61,11 @@ class TransactionItem with BaseModel {
   String? type;
   String? remark;
   double? qty;
-  @JsonKey(name : 'transaction_id')
+  @JsonKey(name: 'transaction_id')
   int? transactionId;
-  @JsonKey(name : 'item_id')
+  @JsonKey(name: 'item_id')
   int? itemId;
-  @JsonKey(name : 'discount_price')
+  @JsonKey(name: 'discount_price')
   int? discountPrice;
 
   factory TransactionItem.fromJson(Map<String, dynamic> json) =>
