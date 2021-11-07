@@ -2,6 +2,7 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Dto\UserJSON;
 use App\Helper;
 use App\Models\Customer;
 use App\Models\Item;
@@ -25,6 +26,9 @@ use function App\testFunction;
 | and give it the Closure to call when that URI is requested.
 |
 */
+
+
+
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
@@ -74,7 +78,10 @@ $router->get('/items-test-upsert', function () {
 });
 
 
-$router->group(['prefix' => 'api/v1',], function () use ($router) {
+$router->group([
+    'prefix' => 'api/v1',
+    'middleware' =>  'filter'
+], function () use ($router) {
     $router->post('/login', function (Request $request) {
         $body = json_decode($request->getContent());
 
@@ -203,6 +210,14 @@ $router->group(['prefix' => 'api/v1',], function () use ($router) {
             });
         });
 
+        class UserPostData
+        {
+            public UserJSON $user;
+            public bool $changePassword;
+            public string $newPassword;
+            public Customer $customer;
+        }
+
         $router->post('/users', function (Request $request) {
             /**
              * {
@@ -212,7 +227,12 @@ $router->group(['prefix' => 'api/v1',], function () use ($router) {
              *      "customer": null
              * }
              */
-            $body = json_decode($request->getContent());
+            $bodyJson = (json_decode($request->getContent()));
+            $body = (Helper::getJsonMapper()
+                ->map($bodyJson, new UserPostData));
+
+            dd($body);
+
 
             if ($body?->changePassword && $body?->user) {
                 $body->user->password = password_hash($body->newPassword, PASSWORD_DEFAULT);
