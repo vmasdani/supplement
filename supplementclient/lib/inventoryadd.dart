@@ -123,15 +123,19 @@ class _InventoryAddPageState extends State<InventoryAddPage> {
       appBar: AppBar(
         title: Text('Inventory Editor'),
         actions: [
-          TextButton(
-            onPressed: () async {
-              _handleSave();
-            },
-            child: Text(
-              'Save',
-              style: TextStyle(color: Colors.white),
-            ),
-          )
+          ...(_loading
+              ? []
+              : [
+                  TextButton(
+                    onPressed: () async {
+                      _handleSave();
+                    },
+                    child: Text(
+                      'Save',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                ])
         ],
       ),
       body: _loading
