@@ -23,7 +23,8 @@ class Helper
         return property_exists($payload, 'admin') && $payload->admin;
     }
 
-    public static function decodeJwt(string $jwt): object {
+    public static function decodeJwt(string $jwt): object
+    {
         return JWT::decode(
             $jwt,
             env('JWT_SECRET'),
@@ -52,7 +53,19 @@ class Helper
         }))) ? true : false;
     }
 
-    public static function getJsonMapper(): JsonMapper {
+    public static function parseBody(Request $request, $class): object
+    {
+        return Helper::getJsonMapper()->map(json_decode($request->getContent()), $class);
+    }
+ 
+    public static function parseBodyArray(Request $request, $class): object
+    {
+        return Helper::getJsonMapper()->mapArray(json_decode($request->getContent()), $class);
+    }
+
+
+    public static function getJsonMapper(): JsonMapper
+    {
         $jm = new JsonMapper;
         $jm->bStrictNullTypes = false;
 

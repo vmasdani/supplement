@@ -2,10 +2,11 @@
 
 namespace App\Dto;
 
- class BaseModel {
-    public ?int $id;
-    public ?int $ordering;
-    public ?int $ext_created_by_id;
-    public ?string $uuid;
-    public ?bool $hidden;
+class BaseModel
+{
+    public ?int $id  = null;
+    public ?int $ordering = 0;
+    public ?int $ext_created_by_id = null;
+    public ?string $uuid = null;
+    public ?bool $hidden = false;
 }

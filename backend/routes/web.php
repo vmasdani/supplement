@@ -2,6 +2,7 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Dto\ItemJSON;
 use App\Dto\UserJSON;
 use App\Helper;
 use App\Models\Customer;
@@ -133,7 +134,7 @@ $router->group([
 
         // Items
         $router->get('/items', function () {
-            return Item::all()->map(function ($i) {
+            return Item::orderBy('id', 'desc')->get()->map(function ($i) {
                 $i?->uom;
                 return $i;
             });
@@ -145,13 +146,12 @@ $router->group([
             return $item;
         });
         $router->post('/items', function (Request $request) {
-            $i = json_decode($request->getContent());
-            return Item::updateOrCreate(['id' => $i?->id], (array) $i);
+            $i = Helper::parseBody($request, new ItemJSON);
+            return response(Item::updateOrCreate(['id' => $i->id], (array) $i), 201);
         });
         $router->delete('/items/{id}', function ($id) {
             Item::findOrFail($id)?->delete($id);
         });
-
         // Transactions
         $router->get('/transactions', function () {
             return Transaction::all();

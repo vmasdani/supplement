@@ -1,12 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supplementclient/applicationstate.dart';
 import 'package:supplementclient/customers.dart';
 import 'package:supplementclient/dashboard.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:supplementclient/inventory.dart';
 import 'package:supplementclient/loginpage.dart';
+import 'package:supplementclient/model.dart';
 
 class MainComponent extends StatefulWidget {
   const MainComponent({Key? key}) : super(key: key);
@@ -16,6 +22,8 @@ class MainComponent extends StatefulWidget {
 }
 
 class _MainComponentState extends State<MainComponent> {
+  
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (ctx, state, child) {
@@ -27,7 +35,6 @@ class _MainComponentState extends State<MainComponent> {
             return InventoryPage();
           case 2:
             return CustomersPage();
-
           default:
             return Scaffold();
         }

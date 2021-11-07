@@ -43,6 +43,8 @@ dependencies:
   flutter_dotenv: ^5.0.2
   firebase_messaging: ^10.0.9
   http: ^0.13.4
+  collection: ^1.15.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
