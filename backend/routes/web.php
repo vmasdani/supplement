@@ -150,7 +150,7 @@ $router->group([
             return response(Item::updateOrCreate(['id' => $i->id], (array) $i), 201);
         });
         $router->delete('/items/{id}', function ($id) {
-            Item::findOrFail($id)?->delete($id);
+            Item::findOrFail($id)?->delete();
         });
         // Transactions
         $router->get('/transactions', function () {

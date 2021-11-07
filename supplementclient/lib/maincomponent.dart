@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:supplementclient/inventory.dart';
 import 'package:supplementclient/loginpage.dart';
 import 'package:supplementclient/model.dart';
+import 'package:supplementclient/users.dart';
 
 class MainComponent extends StatefulWidget {
   const MainComponent({Key? key}) : super(key: key);
@@ -22,8 +23,6 @@ class MainComponent extends StatefulWidget {
 }
 
 class _MainComponentState extends State<MainComponent> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (ctx, state, child) {
@@ -35,6 +34,10 @@ class _MainComponentState extends State<MainComponent> {
             return InventoryPage();
           case 2:
             return CustomersPage();
+
+          case 3:
+            return UsersPage();
+
           default:
             return Scaffold();
         }

@@ -31,20 +31,29 @@ class _InventoryAddPageState extends State<InventoryAddPage> {
   }
 
   Future<void> _init() async {
-    try {
-      setState(() {
-        _loading = true;
-      });
+    if (widget.id != null) {
+      try {
+        setState(() {
+          _loading = true;
+        });
 
-      setState(() {
-        _loading = false;
-      });
-    } catch (e) {
-      print('Error fetching item');
-    } finally {
-      setState(() {
-        _loading = false;
-      });
+        final state = context.read<ApplicationState>();
+        final res = await http.get(
+            Uri.parse('${dotenv.env['BASE_URL']}/api/v1/items/${widget.id}'),
+            headers: {'authorization': state.apiKey ?? ''});
+
+        if (res.statusCode != HttpStatus.ok) throw res.body;
+
+        setState(() {
+          _item = Item.fromJson(jsonDecode(res.body));
+        });
+      } catch (e) {
+        print('Error fetching item');
+      } finally {
+        setState(() {
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -61,6 +70,36 @@ class _InventoryAddPageState extends State<InventoryAddPage> {
           body: jsonEncode(_item));
 
       if (res.statusCode != HttpStatus.created) throw res.body;
+
+      setState(() {
+        _loading = false;
+      });
+
+      if (widget.onSave != null) {
+        widget.onSave!();
+      }
+    } catch (e) {
+      print('[Error saving inventory!] $e');
+    } finally {
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
+  Future<void> _handleDeleteItem() async {
+    try {
+      setState(() {
+        _loading = true;
+      });
+
+      final state = context.read<ApplicationState>();
+      final res = await http.delete(
+        Uri.parse('${dotenv.env['BASE_URL']}/api/v1/items/${_item?.id}'),
+        headers: {'authorization': state?.apiKey ?? ''},
+      );
+
+      if (res.statusCode != HttpStatus.ok) throw res.body;
 
       setState(() {
         _loading = false;
@@ -197,7 +236,59 @@ class _InventoryAddPageState extends State<InventoryAddPage> {
                         )
                       ],
                     ),
-                  )
+                  ),
+                  _item?.id != null && _item?.id != 0
+                      ? Container(
+                          margin: EdgeInsets.only(bottom: 5, top: 5),
+                          child: Container(
+                            child: Row(
+                              children: [
+                                MaterialButton(
+                                  onPressed: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                              title: Text('Confirm deletion'),
+                                              content: Text(
+                                                'Really delete item ${_item?.name}? This action cannot be undone.',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    _handleDeleteItem();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    'Yes, really delete',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    'No',
+                                                    style: TextStyle(
+                                                        color: Colors.green),
+                                                  ),
+                                                ),
+                                              ],
+                                            ));
+                                  },
+                                  child: Text(
+                                    'Delete item',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Container()
                 ],
               ),
             ),

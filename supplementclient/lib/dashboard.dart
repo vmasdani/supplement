@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:supplementclient/inout.dart';
 import 'package:supplementclient/inventory.dart';
 import 'package:supplementclient/model.dart';
+import 'package:supplementclient/users.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -126,9 +127,11 @@ class _DashboardPageState extends State<DashboardPage> {
                     IconButton(
                         onPressed: () async {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => CustomersPage()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => UsersPage(),
+                            ),
+                          );
                         },
                         icon: Icon(Icons.account_box)),
                     Text(

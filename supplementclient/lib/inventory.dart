@@ -24,6 +24,7 @@ class InventoryPage extends StatefulWidget {
 class _InventoryPageState extends State<InventoryPage> {
   var _loading = false;
   List<Item> _items = [];
+  var _search = '';
 
   @override
   void initState() {
@@ -68,114 +69,172 @@ class _InventoryPageState extends State<InventoryPage> {
         onRefresh: () async {
           _init();
         },
-        child: Container(
-          child: ListView(
-            children: [
-              Container(
-                margin: EdgeInsets.all(15),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text('Items total: ${_items.length}'),
+        child: (() {
+          final filteredItems = _items.where(
+            (i) =>
+                '${i.name ?? ''}${i.description ?? ''}'.toLowerCase().contains(
+                      _search.toLowerCase(),
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        color: Colors.blue,
-                        onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => InventoryAddPage(
-                                onSave: () async {
-                                  Navigator.pop(context);
-                                  _init();
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                        icon: Icon(Icons.add),
+          );
+          return Container(
+            child: ListView(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(15),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text('Items total: ${filteredItems.length}'),
                       ),
-                    )
-                  ],
-                ),
-              ),
-              _loading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.blue),
-                      ),
-                    )
-                  : Container(
-                      margin: EdgeInsets.all(15),
-                      child: Column(
-                        children: _items.mapIndexed((index, i) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => InventoryAddPage(
-                                    onSave: () async {
-                                      Navigator.pop(context);
-                                      _init();
-                                    },
-                                  ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          color: Colors.blue,
+                          onPressed: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => InventoryAddPage(
+                                  onSave: () async {
+                                    Navigator.pop(context);
+                                    _init();
+                                  },
                                 ),
-                              );
-                            },
-                            child: Container(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            child: Text(
-                                              '${index + 1}. ${i.name != null && i.name != '' ? i.name! : ''}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.add),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(15),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: TextEditingController(text: _search),
+                          onChanged: (v) {
+                            _search = v;
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                            hintText: 'Search item (by name, desc)...',
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.search)),
+                    ],
+                  ),
+                ),
+                _loading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(Colors.blue),
+                        ),
+                      )
+                    : Container(
+                        margin: EdgeInsets.all(15),
+                        child: Column(
+                          children: filteredItems.mapIndexed((index, i) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => InventoryAddPage(
+                                      id: i.id,
+                                      onSave: () async {
+                                        Navigator.pop(context);
+                                        _init();
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              child: Text(
+                                                '${index + 1}. ${i.name != null && i.name != '' ? i.name! : ''}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Container(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                              '${NumberFormat.decimalPattern().format(i.price ?? 0)}'),
-                                        )
-                                      ],
+                                          Container(
+                                            alignment: Alignment.centerRight,
+                                            child: Text(
+                                                '${NumberFormat.decimalPattern().format(i.price ?? 0)}'),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Container(
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            child: Text(i.description != null &&
-                                                    i.description != ''
-                                                ? i.description!
-                                                : 'No description'),
+                                    Container(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              child: Text(
+                                                  i.description != null &&
+                                                          i.description != ''
+                                                      ? i.description!
+                                                      : 'No description'),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Divider(
-                                    color: Colors.grey,
-                                  )
-                                ],
+                                    Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                              color: Colors.blue,
+                                              padding: EdgeInsets.all(5),
+                                              margin: EdgeInsets.only(
+                                                top: 5,
+                                                bottom: 5,
+                                              ),
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                'In stock: ${0} ${i?.uom?.name ?? ''}',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: Colors.grey,
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    )
-            ],
-          ),
-        ),
+                            );
+                          }).toList(),
+                        ),
+                      )
+              ],
+            ),
+          );
+        })(),
       ),
     );
   }
